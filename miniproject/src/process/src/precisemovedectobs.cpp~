@@ -1,0 +1,137 @@
+#include <iostream>
+#include "ros/ros.h"
+#include "std_msgs/Float32.h"
+#include "std_msgs/String.h"
+#include "std_msgs/Float32MultiArray.h"
+#include "std_msgs/String.h"
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include "geometry_msgs/PointStamped.h"
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
+
+using namespace std;
+using namespace message_filters;
+using namespace geometry_msgs;
+
+
+std_msgs::Float32MultiArray mot;
+ros::Subscriber sub;
+ros::Publisher pub;
+
+float detect, angular, linear, left1, center1, right1, t, x, lefti, centeri, righti;
+int initial_time, wow=0, position=1, step=0;
+bool moving=true;
+ros::Time now, init_time;
+
+void move (float lin, float ang)
+{
+	mot.data.clear();
+	mot.data.push_back(lin);
+	mot.data.push_back(ang);
+	cout << lin << endl << ang << endl;
+	pub.publish(mot);
+}
+
+void callback (const geometry_msgs::PointStamped::ConstPtr& orient_data, const geometry_msgs::PointStamped::ConstPtr& obst_data)
+{
+	ros::Rate r(5);
+	ros::Rate l(5);
+	ros::Rate delay(.4);
+
+	right1=obst_data->point.x;
+	center1=obst_data->point.y;
+	left1=obst_data->point.z;
+	cout << center1 << endl;
+	//linear=0.1;
+	
+	cout << ">>>>>>>>>> " << x;
+	if (wow==0)
+	{	
+		step=0;
+		wow=1;
+		lefti=left1;
+		righti=right1;
+		centeri=center1;
+	}
+	if (left1<1 )
+	{	
+	step=0;
+	move (0.2, 13*(lefti-left1));
+	x=t;
+	}
+	else 
+	{
+	move (0.2, x*(lefti-left1));
+	x=x+0.01;
+	step++;
+	if (step>400)
+	{
+		x=x+0.5;
+	}
+	if (step >500)
+		x=x+0.7;
+	}
+	/*switch (position)
+	{
+		case 1:
+			if (right1<0.52  && center1<.52 && left1<0.52)
+			{
+				move(0, 0);
+				cout << "wall" << endl;
+				position=2;
+			}
+			else
+				if ((center1-right1)<0.1 && (left1-center1)<0.1)
+				{
+					move(0.5, 0);
+					cout << "going" << endl;
+					
+				}
+		break;
+		case 2:
+			if (wow==0)
+			{
+				init_time=ros::Time::now();
+				wow=1;
+			}
+			if (now-init_time<ros::Duration(1.045))
+				{
+					cout << "time= " <<now-init_time;
+					now=ros::Time::now();
+					move (0, 1);
+					ros::Rate r(10);
+					cout << "turning" << endl;
+					r.sleep();
+				}
+		break;
+	}*/
+				
+			
+	
+}
+int main (int argc, char **argv)
+{
+	
+	cin>>t;
+	//t=0.04;
+	ros::init(argc, argv, "processor");
+	ros::NodeHandle n;
+	pub = n.advertise < std_msgs::Float32MultiArray>("move_data", 10);
+
+	message_filters::Subscriber<geometry_msgs::PointStamped> orientation (n, "orientation", 1);
+	message_filters::Subscriber<geometry_msgs::PointStamped> obstacle (n, "obstacle", 1);
+
+	typedef sync_policies::ApproximateTime<PointStamped, PointStamped> MySyncPolicy;
+        Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), orientation, obstacle);
+        sync.registerCallback(boost::bind(&callback, _1, _2));
+	
+	ros::spin(); 
+	return 0;
+
+}

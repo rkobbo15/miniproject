@@ -1,0 +1,2 @@
+move:process:sense
+-DCATKIN_DEVEL_PREFIX=/home/turtlebot/miniproject/devel -DCMAKE_INSTALL_PREFIX=/home/turtlebot/miniproject/install -G Unix Makefiles

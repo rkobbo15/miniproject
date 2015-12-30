@@ -1,0 +1,8 @@
+prefix=/home/turtlebot/miniproject/devel
+
+Name: move
+Description: Description of move
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/turtlebot/miniproject/devel/lib 
+Requires: 

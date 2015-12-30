@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "move")
+set(move_MAINTAINER "turtlebot <turtlebot@todo.todo>")
+set(move_DEPRECATED "")
+set(move_VERSION "0.0.0")
+set(move_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(move_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(move_BUILDTOOL_DEPENDS "catkin")

@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "sense")
+set(sense_MAINTAINER "turtlebot <turtlebot@todo.todo>")
+set(sense_DEPRECATED "")
+set(sense_VERSION "0.0.0")
+set(sense_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(sense_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(sense_BUILDTOOL_DEPENDS "catkin")

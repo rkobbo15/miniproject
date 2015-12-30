@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "process")
+set(process_MAINTAINER "turtlebot <turtlebot@todo.todo>")
+set(process_DEPRECATED "")
+set(process_VERSION "0.0.0")
+set(process_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(process_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(process_BUILDTOOL_DEPENDS "catkin")
